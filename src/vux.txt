@@ -1,0 +1,135 @@
+1、组件confirm
+    const _this = this // 需要注意 onCancel 和 onConfirm 的 this 指向
+    this.$vux.confirm.show({
+    // 组件除show外的属性
+    onCancel () {
+        console.log(this) // 非当前 vm
+        console.log(_this) // 当前 vm
+    },
+    onConfirm () {}
+    })
+
+2、组件toast
+    // 显示
+    this.$vux.toast.show({
+    text: 'Loading'
+    })
+    // 显示文字
+    this.$vux.toast.text('hello', 'top')
+
+    // 隐藏
+    this.$vux.toast.hide()
+
+3、组件alert
+    // 显示
+    this.$vux.alert.show({
+    title: 'Vux is Cool',
+    content: 'Do you agree?',
+    onShow () {
+        console.log('Plugin: I\'m showing')
+    },
+    onHide () {
+        console.log('Plugin: I\'m hiding')
+    }
+    })
+    // 隐藏
+    this.$vux.alert.hide()
+
+4、组件panel
+    <panel header="图文组合列表" :footer="footer" :list="list" :type="type" @on-img-error="onImgError"></panel>
+    type:[1、2、3、4、5]
+    list: [{
+            src: 'http://somedomain.somdomain/x.jpg',
+            fallbackSrc: 'http://placeholder.qiniudn.com/60x60/3cc51f/ffffff',
+            title: '标题一',
+            desc: '由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。',
+            url: '/component/cell'
+        }, {
+            src: 'http://placeholder.qiniudn.com/60x60/3cc51f/ffffff',
+            title: '标题二',
+            desc: '由各种物质组成的巨型球状天体，叫做星球。星球有一定的形状，有自己的运行轨道。',
+            url: {
+            path: '/component/radio',
+            replace: false
+            },
+            meta: {
+            source: '来源信息',
+            date: '时间',
+            other: '其他信息'
+        }
+    }],
+    footer: {
+        title: '查看更多',
+        url: 'http://vux.li'
+    }
+    方法:   on-click-header 点击头部时触发
+            on-click-item(item) 点击内容列表时触发
+            on-click-footer 点击尾部时触发
+
+5、组件popup
+    <div v-transfer-dom>
+      <popup v-model="show7" height="270px" is-transparent>
+        <div style="width: 95%;background-color:#fff;height:250px;margin:0 auto;border-radius:5px;padding-top:10px;">
+            写自己的业务内容
+        </div>
+      </popup>
+    </div>
+
+6、组件表单
+     <group label-width="4.5em" label-margin-right="2em" label-align="right">
+      <cell title="Cell" value="value" is-link value-align="left" :inline-desc="desc"></cell>
+      <x-input title="上报人" v-model="value1" placeholder="I'm placeholder"></x-input>
+      <x-input title="隐患部位" placeholder="必填" v-model="value3"></x-input>
+      <x-input title="密码" type="password" placeholder="必填" v-model="value4"></x-input>
+      <x-input >
+        <img slot="restricted-label" style="display:inline-block;vertical-align:middle;" src="http://dn-placeholder.qbox.me/110x110/FF2D55/000" width="24" height="24">
+      </x-input>
+      <x-input title="上<i class='vux-blank-half'></i>报<i class='vux-blank-half'></i>人" v-model="value1"></x-input>
+      <x-number title="Quantity" align="left" v-model="numberValue" button-style="round" :min="0" :max="5"></x-number>
+      <datetime title="时&emsp;&emsp;&nbsp;间" v-model="time1" value-text-align="left"></datetime>
+      <selector title="隐患类别" :options="['工艺技术', '其他']" v-model="value2"></selector>
+      <selector title="隐患类别" placeholder="Placeholder" :options="['工艺技术', '其他']" v-model="value7"></selector>
+      <selector title="隐患类别" :options="['工艺技术', '其他']" v-model="value8"></selector>
+      <popup-picker title="请选择" :data="list" v-model="value5" value-text-align="left"></popup-picker>
+      <popup-picker title="请选择" placeholder="Required" :data="list" v-model="value6" value-text-align="left"></popup-picker>
+      <x-address title="地址选择" v-model="addressValue" raw-value :list="addressData" value-text-align="left"></x-address>
+      <x-textarea title="详细信息" placeholder="请填写详细信息" :show-counter="false" :rows="3"></x-textarea>
+      <x-textarea placeholder="请填写详细信息" :show-counter="false" :rows="3">
+        <img slot="restricted-label" style="display:inline-block;vertical-align:middle;" src="http://dn-placeholder.qbox.me/110x110/FF2D55/000" width="24" height="24">
+      </x-textarea>
+    </group>
+7、search
+        <search
+            @result-click="resultClick"
+            @on-change="getResult"
+            :results="results"
+            v-model="value"
+            placeholder="输入资产编号、领用人、使用人"
+            @on-focus="onFocus"
+            @on-cancel="onCancel"
+            @on-submit="onSubmit"
+            ref="search">
+        </search>
+8、table      
+  api:
+    full-bordered:是否显示表格左右边框
+    content-bordered:是否显示 body tr 的下边框
+    cell-bordered:是否显示表格的右边边框
+  组件:
+    <x-table :cell-bordered="false" :content-bordered="false" style="background-color:#fff;">
+        <thead>
+          <tr style="background-color: #F7F7F7">
+            <th>Product</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Apple</td>
+          </tr>
+          <tr>
+            <td> x 2</td>
+          </tr>
+        </tbody>
+    </x-table>
+9、divider
+    <divider>我是有底线的</divider>    
