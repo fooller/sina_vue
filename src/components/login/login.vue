@@ -88,6 +88,7 @@
 </template>
 <script>
 import dragVerify from "vue-drag-verify";
+import { login } from '../../api/assets.js';
 export default {
   components: {
     dragVerify
@@ -148,7 +149,18 @@ export default {
         });
         // return false;
       }
-      this.$router.push({ path : '/wb_main'})
+      login({userName:this.form.username,passWord:this.form.password}).then(res => {
+        console.log(res);
+        if (res.data.status == 200) {
+          this.$router.push({ path : '/wb_main'})
+        }else if (res.data.status == 100) {
+          this.$message({
+          message: '用户名或密码错误！',
+          type: 'warning'
+        });
+        }
+      })
+      
     },
     dragV_btn() {
       this.form.code = true;

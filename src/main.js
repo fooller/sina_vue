@@ -6,13 +6,13 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 
 Vue.use(ElementUI)
+
 import App from './App'
 import router from './router/index';
 import axios from 'axios';
 import cookies from 'js-cookie';
 import store from "./vuex/index";
 import VueScroll from 'vue-scroll'
-import  './utils/rem.js';
 Vue.use(VueScroll)
 Vue.prototype.$cookie = cookies;
 import './static/iconfont/iconfont.css'

@@ -57,28 +57,46 @@
 <script>
 // import url from '../../tempt.json';
 import weibo_bg1 from "../../assets/images/weibo_BG1.png";
+import { regist } from "../../api/assets.js";
 export default {
   components: {},
   data() {
     return {
-      tab_select_flag:0,
+      tab_select_flag: 0,
       ruleForm: {
-        name: '',
-        password:'',
-        repassword:''
+        name: "",
+        password: "",
+        repassword: ""
       },
       rules: {
         name: [
-          { required: true, message: "请输入活动名称", trigger: "blur" },
+          { required: true, message: "请输用户名", trigger: "blur" },
           { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" }
         ]
       }
     };
   },
-  methods:{
-      regist_btn(){
-
-      }
+  methods: {
+    regist_btn() {
+      regist({
+        userName: this.ruleForm.name,
+        passWord: this.ruleForm.password
+      }).then(res => {
+        console.log(res.data.status);
+        if (res.data.status == 200) {
+          this.$message({
+            message: "成功添加用户！",
+            type: "success"
+          });
+          this.$router.push({name:'hot'})
+        }else if (res.data.status == 100) {
+          this.$message({
+            message: res.data.message,
+            type: "warning"
+          });
+        }
+      });
+    }
   }
 };
 </script>
@@ -105,7 +123,7 @@ export default {
       width: 200px;
       height: 72px;
       margin: 0 auto;
-    //   margin-top: 26px;
+      //   margin-top: 26px;
       background: url(@url2) no-repeat;
     }
   }
@@ -134,7 +152,7 @@ export default {
       }
     }
     .body_tab_bottom {
-        border-bottom: 3px solid #ffa00a;
+      border-bottom: 3px solid #ffa00a;
     }
     .body_form {
       float: left;
@@ -157,8 +175,8 @@ export default {
       padding: 0 80px;
       width: 40%;
       font-size: 14px;
-      a{
-          color: #0a8cd2;
+      a {
+        color: #0a8cd2;
       }
       .title {
         padding-bottom: 10px;
@@ -171,12 +189,11 @@ export default {
         ul {
           display: flex;
           flex-direction: column;
-          li{
-              padding: 5px 0 ;
-              a{
-                  color: #0a8cd2;
-                  
-              }
+          li {
+            padding: 5px 0;
+            a {
+              color: #0a8cd2;
+            }
           }
         }
       }

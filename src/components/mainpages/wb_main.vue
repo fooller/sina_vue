@@ -65,12 +65,12 @@
               <a>热门微博</a>
             </div>
           </div>
-          <div class="publisher_c">
-            <textarea class="publisher_c_textarea"></textarea>
+          <div class="publisher_c" :class="{publisher_c_color:colorBorder}">
+            <textarea ref="textarea" @focus="colorBorder=true" @blur="colorBorder=false" v-model="publish_text" class="publisher_c_textarea"></textarea>
           </div>
           <div class="publisher_b">
             <div class="kind">
-              <a><i style="color:#ffa405" class="iconfont icon-biaoqing"></i>表情</a>
+              <a @click="faceFn"><i style="color:#ffa405" class="iconfont icon-biaoqing"></i>表情</a>
               <a><i style="color:#84c002" class="iconfont icon-tupian"></i>图片</a>
               <a><i style="color:#54A8E5" class="iconfont icon-shipin1"></i>视频</a>
               <a><i style="color:#54A8E5" class="iconfont icon-huati"></i>话题</a>
@@ -78,17 +78,26 @@
               <a>...</a>
             </div>
             <div class="func">
-              <span>公开</span>
-              <span><i class="iconfont icon-jiantou-copy-copy"></i></span>
-              <a>发布</a>
-              <div class="menu_list">
+              <span @click='menuShowFn'>{{menuVal}}</span>
+              <span><i @click='menuShowFn' class="iconfont icon-jiantou-copy-copy"></i></span>
+              <a @click.stop = "publish">发布</a>
+              <div class="menu_list" v-show="menu_show">
                 <ul>
-                  <li>公开</li>
-                  <li>好友圈</li>
-                  <li>仅自己可见</li>
-                  <li>群可见</li>
+                  <li @click.stop="menuClick(item)" v-for="(item,index) in menu_list" :key="index">{{item.value}}</li>
                 </ul>
               </div>
+            </div>
+            <div class="face" v-show="face_show">
+                <div class="sj">
+                  <i class="iconfont icon-sanjiaotop"></i>
+                </div>
+                <div class="faces_box">
+                  <div class="faces">
+                    <ul>
+                      <li ref="faces" @mouseleave="faceMouseLeaveFn(index)" @mouseover="faceMouseOverFn(index)" @click="selFace(item)" v-for="(item,index) in 96" :key="index"><i class="em em-baby"></i></li>
+                    </ul>
+                  </div>
+                </div>
             </div>
           </div>
         </div>
@@ -104,6 +113,7 @@
                   <li><span><a>音乐</a></span><span><i class="iconfont icon-sanjiaotop"></i></span></li>
                   <li><span><a>文章</a></span><span><i class="iconfont icon-sanjiaotop"></i></span></li>
                 </ul>
+                
               </div>
               <div class="wb_tab_search">
                 <div class="search">
@@ -221,6 +231,7 @@
   </div>
 </template>
 <script>
+import emoji from "node-emoji";
 export default {
   data() {
     return {
@@ -237,16 +248,88 @@ export default {
         { item_name: "游戏" },
         { item_name: "群关注" },
         { item_name: "悄悄关注" }
-      ]
+      ],
+      menu_list: [
+        { id: 1, value: "公开" },
+        { id: 2, value: "好友圈" },
+        { id: 3, value: "仅自己可见" },
+        { id: 4, value: "仅群可见" }
+      ],
+      publish_text: "",
+      menuVal: "公开",
+      menu_show: false,
+      face_show:false,
+      colorBorder: false
     };
   },
   mounted() {
     window.addEventListener("scroll", this.scroll_fn);
   },
+  created() {
+    let emoji_coffee = emoji.get("coffee");
+    console.log(emoji_coffee);
+  },
   methods: {
+    faceMouseOverFn(index){
+      // console.log(this.$refs.faces[index]);
+      this.$refs.faces[index].style.borderColor = '#f50';
+      // this.$refs.faces[index].style.borderWidth = '1px';
+      this.$refs.faces[index].style.borderStyle = 'solid';
+
+    },
+    faceMouseLeaveFn(index){
+      this.$refs.faces[index].style.borderColor = '#cccccc';
+      // this.$refs.faces[index].style.borderRight = 'none';
+      // this.$refs.faces[index].style.borderTop = 'none';
+
+    },
+    selFace(item){
+      this.face_show = false;
+    },
+    faceFn(){
+      this.face_show = !this.face_show;
+    },
+    menuShowFn() {
+      this.menu_show = !this.menu_show;
+    },
+    menuClick(item) {
+      this.menu_show = false;
+      this.menuVal = item.value;
+    },
     scroll_fn() {
       console.log(document.documentElement.scrollTop);
       console.log(document.getElementById("lflf").scrollTop);
+    },
+    publish() {
+      if (!this.publish_text) {
+        this.timeOutBKG(100);
+        return;
+      }
+      console.log("发布内容为：" + this.publish_text);
+      this.publish_text = "";
+    },
+
+    // utils .....................//
+    // 自定义时间，改变背景色
+    timeOutBKG(time) {
+      let i = 0;
+      setInterval(() => {
+        if (i == 0) {
+          this.$refs.textarea.style.backgroundColor = "rgb(255,238,238)";
+        } else if (i == 1) {
+          this.$refs.textarea.style.backgroundColor = "rgb(255,204,204)";
+        } else if (i == 2) {
+          this.$refs.textarea.style.backgroundColor = "rgb(255,221,221)";
+        } else if (i == 3) {
+          this.$refs.textarea.style.backgroundColor = "rgb(255,238,238)";
+        } else if (i == 4) {
+          this.$refs.textarea.style.backgroundColor = "rgb(255,255,255)";
+        }
+        i++;
+        if (i == 4) {
+          return;
+        }
+      }, time);
     }
   }
 };
@@ -337,9 +420,6 @@ export default {
             color: #f50;
             font-size: 13px;
           }
-          a:last-child {
-            // float: right;
-          }
         }
         .publisher_c {
           border: 1px solid #cccccc;
@@ -357,6 +437,21 @@ export default {
             outline: none;
             word-wrap: break-word;
           }
+          .publisher_c_textarea_1 {
+            background-color: blueviolet;
+          }
+          .publisher_c_textarea_2 {
+            background-color: beige;
+          }
+          .publisher_c_textarea_3 {
+            background-color: aqua;
+          }
+          .publisher_c_textarea_4 {
+            background-color: blueviolet;
+          }
+        }
+        .publisher_c_color {
+          border: 1px solid #fa7d3c;
         }
         .publisher_b {
           display: flex;
@@ -388,7 +483,7 @@ export default {
             span {
               padding-top: 22px;
               font-size: 13px;
-              width: 30px;
+              // width: 30px;
               i {
               }
             }
@@ -417,6 +512,84 @@ export default {
                   padding: 7px 10px;
                   height: 30px;
                   vertical-align: middle;
+                }
+              }
+            }
+          }
+          .face {
+            position: relative;
+            .sj{
+              position: absolute;
+              top: 35px;
+              left: -560px;
+              i{
+                color:#f50;
+                font-size: 30px;
+                border-width: 7px;
+              }
+            }
+            .faces_box {
+              position: absolute;
+              top: 50px;
+              left: -580px;
+              // left: 10px;
+              width: 420px;
+              height: 300px;
+              border: 1px solid #cccccc;
+              background-color: #ffffff;
+              .faces{
+                padding: 26px 16px 15px;
+                ul{
+                  display: flex;
+                  flex-direction: row;
+                  flex-wrap: wrap;
+                  li{
+                    width: 32px;
+                    height: 32px;
+                    border-left: 1px solid #cccccc;
+                    border-bottom: 1px solid #cccccc;
+                    text-align: center;
+                    padding-top: 5px;
+                  }
+                  li:nth-child(12n){
+                    border-right: 1px solid #cccccc;
+                  }
+                  li:nth-child(1){
+                    border-top: 1px solid #cccccc;
+                  }
+                  li:nth-child(2){
+                    border-top: 1px solid #cccccc;
+                  }
+                  li:nth-child(3){
+                    border-top: 1px solid #cccccc;
+                  }
+                  li:nth-child(4){
+                    border-top: 1px solid #cccccc;
+                  }
+                  li:nth-child(5){
+                    border-top: 1px solid #cccccc;
+                  }
+                  li:nth-child(6){
+                    border-top: 1px solid #cccccc;
+                  }
+                  li:nth-child(7){
+                    border-top: 1px solid #cccccc;
+                  }
+                  li:nth-child(8){
+                    border-top: 1px solid #cccccc;
+                  }
+                  li:nth-child(9){
+                    border-top: 1px solid #cccccc;
+                  }
+                  li:nth-child(10){
+                    border-top: 1px solid #cccccc;
+                  }
+                  li:nth-child(11){
+                    border-top: 1px solid #cccccc;
+                  }
+                  li:nth-child(12){
+                    border-top: 1px solid #cccccc;
+                  }
                 }
               }
             }
@@ -673,7 +846,7 @@ export default {
                 margin-right: 5px;
                 font-size: 10px;
               }
-              span{
+              span {
                 font-size: 13px;
               }
             }

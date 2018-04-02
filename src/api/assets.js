@@ -35,6 +35,19 @@ export function login(data){
     })
 }
 
+/**
+ * @export 用户注册
+ * @param {any} data 
+ * @returns 
+ */
+export function regist(data){
+    return fetch({
+        url:'/loginuser/regist',
+        method:'post',
+        params:data
+    })
+}
+
 
 /**
  * 查询图片接口
