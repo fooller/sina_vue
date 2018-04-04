@@ -124,36 +124,36 @@
               </div>
             </div>
             <div class="wb_main_c_list">
-                <div class="list_item">
-                  <div class="lf_face">
-                    <a><img width="50" height="50" src="../../assets/images/miss.jpg" alt=""></a>
-                  </div>
-                  <div class="ri_detail">
-                    <div class="ri_detail_userinfo"><a>Miss</a><a><i></i></a></div>
-                    <div class="ri_detail_info"><a>02月06日11:25</a>来自<a>韩三岁的iPhone客户端</a></div>
-                    <div class="ri_detail_content">
-                      <a>#miss直播</a>
-                      2018.2.5晚上7点
-                      <br>
-                      <a><i></i>网页链接</a>
-                      <br>
-                      <p>随飞机奔跑空投是方向，追逐98K和八倍镜的力量！今夜我们都是追梦人~
-                          转发评论微博，即有机会获得Miss定制版雷柏V760机械键盘（3个名额） ​​​​</p>
-                    </div>
-                    <div class="ri_detail_media">
-                      <div class="media_box">
-                        <ul class="media_box_ul">
-                          <li class="media_box_li">
-                            <img>
-                            <i></i>
-                            <i></i>
-                          </li>
-                        </ul>
+                <div class="list_item" v-for="(item,index) in list" :key="index">
+                  <div class="top">
+                      <div class="lf_face">
+                        <a><img width="50" height="50" src="../../assets/images/miss.jpg" alt=""></a>
                       </div>
-                    </div>
+                      <div class="ri_detail">
+                        <div class="ri_detail_userinfo"><a>Miss</a><a><i></i></a></div>
+                        <div class="ri_detail_info"><a>02月06日11:25</a>来自<a>韩三岁的iPhone客户端</a></div>
+                        <div class="ri_detail_content">
+                          <a>#miss直播</a>
+                          2018.2.5晚上7点
+                          <br>
+                          <a><i></i>网页链接</a>
+                          <br>
+                          <p>{{item.content}}</p>
+                        </div>
+                        <div class="ri_detail_media">
+                          <div class="media_box">
+                            <ul class="media_box_ul">
+                              <li class="media_box_li">
+                                <img>
+                                <i></i>
+                                <i></i>
+                              </li>
+                            </ul>
+                          </div>
+                        </div>
+                      </div>
                   </div>
-                </div>
-                <div class="wb_detail_handle">
+                  <div class="wb_detail_handle">
                       <ul class="wb_detail_handle_ul">
                         <li class="wb_detail_handle_li">
                           <a><i class="iconfont icon-shoucang1"></i>收藏</a>
@@ -168,7 +168,8 @@
                           <a><i class="iconfont icon-zan1"></i>赞</a>
                         </li>
                       </ul>
-                    </div>
+                </div>
+                </div>
             </div>
           </div>
         </div>
@@ -232,6 +233,7 @@
 </template>
 <script>
 import emoji from "node-emoji";
+import { release, list } from "../../api/assets.js";
 export default {
   data() {
     return {
@@ -258,8 +260,9 @@ export default {
       publish_text: "",
       menuVal: "公开",
       menu_show: false,
-      face_show:false,
-      colorBorder: false
+      face_show: false,
+      colorBorder: false,
+      list: []
     };
   },
   mounted() {
@@ -268,25 +271,26 @@ export default {
   created() {
     let emoji_coffee = emoji.get("coffee");
     console.log(emoji_coffee);
+    list().then(res => {
+      this.list = res.data;
+    });
   },
   methods: {
-    faceMouseOverFn(index){
+    faceMouseOverFn(index) {
       // console.log(this.$refs.faces[index]);
-      this.$refs.faces[index].style.borderColor = '#f50';
+      this.$refs.faces[index].style.borderColor = "#f50";
       // this.$refs.faces[index].style.borderWidth = '1px';
-      this.$refs.faces[index].style.borderStyle = 'solid';
-
+      this.$refs.faces[index].style.borderStyle = "solid";
     },
-    faceMouseLeaveFn(index){
-      this.$refs.faces[index].style.borderColor = '#cccccc';
+    faceMouseLeaveFn(index) {
+      this.$refs.faces[index].style.borderColor = "#cccccc";
       // this.$refs.faces[index].style.borderRight = 'none';
       // this.$refs.faces[index].style.borderTop = 'none';
-
     },
-    selFace(item){
+    selFace(item) {
       this.face_show = false;
     },
-    faceFn(){
+    faceFn() {
       this.face_show = !this.face_show;
     },
     menuShowFn() {
@@ -300,13 +304,22 @@ export default {
       console.log(document.documentElement.scrollTop);
       console.log(document.getElementById("lflf").scrollTop);
     },
+    // 发布
     publish() {
       if (!this.publish_text) {
         this.timeOutBKG(100);
         return;
       }
+      let formdata = new FormData();
+      formdata.append("content", this.publish_text);
+      formdata.append("userId", this.$cookie.get("id"));
+      formdata.append("file", null);
+      release(formdata).then(res => {
+        console.log(res);
+      });
       console.log("发布内容为：" + this.publish_text);
       this.publish_text = "";
+      this.list.push({ content: this.publish_text });
     },
 
     // utils .....................//
@@ -518,12 +531,12 @@ export default {
           }
           .face {
             position: relative;
-            .sj{
+            .sj {
               position: absolute;
               top: 35px;
               left: -560px;
-              i{
-                color:#f50;
+              i {
+                color: #f50;
                 font-size: 30px;
                 border-width: 7px;
               }
@@ -537,13 +550,13 @@ export default {
               height: 300px;
               border: 1px solid #cccccc;
               background-color: #ffffff;
-              .faces{
+              .faces {
                 padding: 26px 16px 15px;
-                ul{
+                ul {
                   display: flex;
                   flex-direction: row;
                   flex-wrap: wrap;
-                  li{
+                  li {
                     width: 32px;
                     height: 32px;
                     border-left: 1px solid #cccccc;
@@ -551,43 +564,43 @@ export default {
                     text-align: center;
                     padding-top: 5px;
                   }
-                  li:nth-child(12n){
+                  li:nth-child(12n) {
                     border-right: 1px solid #cccccc;
                   }
-                  li:nth-child(1){
+                  li:nth-child(1) {
                     border-top: 1px solid #cccccc;
                   }
-                  li:nth-child(2){
+                  li:nth-child(2) {
                     border-top: 1px solid #cccccc;
                   }
-                  li:nth-child(3){
+                  li:nth-child(3) {
                     border-top: 1px solid #cccccc;
                   }
-                  li:nth-child(4){
+                  li:nth-child(4) {
                     border-top: 1px solid #cccccc;
                   }
-                  li:nth-child(5){
+                  li:nth-child(5) {
                     border-top: 1px solid #cccccc;
                   }
-                  li:nth-child(6){
+                  li:nth-child(6) {
                     border-top: 1px solid #cccccc;
                   }
-                  li:nth-child(7){
+                  li:nth-child(7) {
                     border-top: 1px solid #cccccc;
                   }
-                  li:nth-child(8){
+                  li:nth-child(8) {
                     border-top: 1px solid #cccccc;
                   }
-                  li:nth-child(9){
+                  li:nth-child(9) {
                     border-top: 1px solid #cccccc;
                   }
-                  li:nth-child(10){
+                  li:nth-child(10) {
                     border-top: 1px solid #cccccc;
                   }
-                  li:nth-child(11){
+                  li:nth-child(11) {
                     border-top: 1px solid #cccccc;
                   }
-                  li:nth-child(12){
+                  li:nth-child(12) {
                     border-top: 1px solid #cccccc;
                   }
                 }
@@ -670,71 +683,76 @@ export default {
       }
       .wb_main_c_list {
         margin: 10px 0;
-        background-color: #ffffff;
         height: 100%;
         width: 600px;
         height: auto;
-        padding: 20px 20px 0 20px;
-        border-radius: 5px;
+        // border-radius: 5px;
         .list_item {
+        padding: 20px 20px 0 20px;
+        background-color: #ffffff;
+        margin-bottom: 15px;          
           display: flex;
-          .lf_face {
-            img {
-              border-radius: 50%;
-            }
-          }
-          .ri_detail {
-            width: 500px;
-            margin-left: 10px;
-            .ri_detail_userinfo {
-              padding-bottom: 7px;
-              a {
-                color: #000;
-              }
-            }
-            .ri_detail_info {
-              padding-bottom: 5px;
-              color: #888888;
-              a {
-                font-size: 10px;
-              }
-            }
-            .ri_detail_content {
-              color: #000;
-              font-size: 15px;
-              a {
-                display: inline-flex;
-                color: red;
-                font-size: 14px;
-                padding-bottom: 5px;
-              }
-              p {
-                line-height: 20px;
-                font-size: 14px;
-              }
-            }
-            .ri_detail_media {
-            }
-          }
-        }
-        .wb_detail_handle {
-          border-top: 1px solid #f2f2f5;
-          .wb_detail_handle_ul {
+          flex-direction: column;
+          .top {
             display: flex;
-            flex-direction: row;
-            justify-content: space-around;
-            height: 38px;
-            padding-top: 10px;
-            padding-bottom: 10px;
-            .wb_detail_handle_li {
-              width: 150px;
-              text-align: center;
-              font-size: 12px;
-              color: #808080;
-              border-right: 1px solid #dadada;
+            .lf_face {
+              img {
+                border-radius: 50%;
+              }
             }
-            .wb_detail_handle_li:last-child {
-              border-right: none;
+            .ri_detail {
+              width: 500px;
+              margin-left: 10px;
+              .ri_detail_userinfo {
+                padding-bottom: 7px;
+                a {
+                  color: #000;
+                }
+              }
+              .ri_detail_info {
+                padding-bottom: 5px;
+                color: #888888;
+                a {
+                  font-size: 10px;
+                }
+              }
+              .ri_detail_content {
+                color: #000;
+                font-size: 15px;
+                a {
+                  display: inline-flex;
+                  color: red;
+                  font-size: 14px;
+                  padding-bottom: 5px;
+                }
+                p {
+                  line-height: 20px;
+                  font-size: 14px;
+                }
+              }
+              .ri_detail_media {
+              }
+            }
+          }
+          .wb_detail_handle {
+            border-top: 1px solid #f2f2f5;
+            .wb_detail_handle_ul {
+              display: flex;
+              flex-direction: row;
+              justify-content: space-around;
+              height: 38px;
+              padding-top: 10px;
+              padding-bottom: 10px;
+              .wb_detail_handle_li {
+                width: 150px;
+                text-align: center;
+                font-size: 12px;
+                color: #808080;
+                border-right: 1px solid #dadada;
+              }
+              .wb_detail_handle_li:last-child {
+                border-right: none;
+              }
             }
           }
         }

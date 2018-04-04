@@ -152,6 +152,10 @@ export default {
       login({userName:this.form.username,passWord:this.form.password}).then(res => {
         console.log(res);
         if (res.data.status == 200) {
+          console.log(res.data.info);
+          this.$cookie.set('loginname',res.data.info[0].loginname);
+          this.$cookie.set('password',res.data.info[0].password);
+          this.$cookie.set('id',res.data.info[0].id);
           this.$router.push({ path : '/wb_main'})
         }else if (res.data.status == 100) {
           this.$message({

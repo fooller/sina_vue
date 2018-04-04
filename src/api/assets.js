@@ -89,5 +89,32 @@ export function delFile(data){
     })
 }
 
+/**
+ * 发布
+ * 
+ * @export
+ * @param {any} data 
+ * @returns 
+ */
+export function release(data){
+    return fetch({
+        url:'/loginuser/release',
+        method:'post',
+        data
+    })
+}
+
+/**
+ * 
+ * @param {查询列表} data 
+ */
+export function list(data){
+    return fetch({
+        url:'/loginuser/selectReleaseAllUserList',
+        method:'get',
+        params:data
+    })
+}
+
 
 
