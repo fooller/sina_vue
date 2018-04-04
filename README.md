@@ -24,6 +24,9 @@ vue书写新浪微博
   watch     观察者
   filters   过滤器
   $refs     操作dom
+  class绑定
+  过渡动画
+  （目前还没有用到比较牛逼的api 比如：render,自定义指令等等！希望可以用到)
   ......
 ```
 
