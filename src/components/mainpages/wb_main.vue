@@ -2,52 +2,18 @@
   <div class="wb" >
     <div class="wb_nv">
       <div id="lflf" ref="lf" @scroll="scroll_fn" class="wb_nav_item">
-        <div class="nav_box">
-          首页
-        </div>
-        <div class="nav_box">
-          我的收藏
-        </div>
-        <div class="nav_box">
-          我的赞
-        </div>
-        <div class="nav_box line">
+        <div class="nav_box" :class="{line:index ==3 || index == 7}" v-for="(item,index) in tab_list" :key="index">
+          <div v-show="index != 3 && index != 7">
+            {{item.item_name}}
+          </div>          
           <fieldset>
-            <legend>
+            <legend  v-show="index == 3" style="padding-bottom:20px;">
               <!-- <a>设置</a> -->
             </legend>
-          </fieldset>
-        </div>
-        <div class="nav_box">
-          热门微博
-        </div>
-        <div class="nav_box">
-          热门视频
-        </div>
-        <div class="nav_box line">
-          <fieldset>
-            <legend>
+            <legend v-show="index == 7">
               <a><i class="iconfont icon-set"></i></a>
             </legend>
           </fieldset>
-        </div>
-        <div class="nav_box">
-          好友圈
-        </div>
-        <div class="nav_box">
-          特别关注
-        </div>
-        <div class="nav_box">
-          V+微博
-        </div>
-        <div class="nav_box">
-          游戏
-        </div>
-        <div class="nav_box">
-          群微博
-        </div>
-        <div class="nav_box">
-          悄悄关注
         </div>
       </div>
     </div>
@@ -106,14 +72,8 @@
             <div class="wb_tab">
               <div class="wb_tab_ul">
                 <ul>
-                  <li><span><a>全部</a></span><span><i class="iconfont icon-sanjiaotop"></i></span></li>
-                  <li><span><a>原创</a></span><span><i class="iconfont icon-sanjiaotop"></i></span></li>
-                  <li><span><a>图片</a></span><span><i class="iconfont icon-sanjiaotop"></i></span></li>
-                  <li><span><a>视频</a></span><span><i class="iconfont icon-sanjiaotop"></i></span></li>
-                  <li><span><a>音乐</a></span><span><i class="iconfont icon-sanjiaotop"></i></span></li>
-                  <li><span><a>文章</a></span><span><i class="iconfont icon-sanjiaotop"></i></span></li>
+                  <li v-for="(item,index) in wb_tab_ul_list" :key="index" ><span><a>{{item.item_name}}</a></span><span><i class="iconfont icon-sanjiaotop"></i></span></li>
                 </ul>
-                
               </div>
               <div class="wb_tab_search">
                 <div class="search">
@@ -181,22 +141,14 @@
           </div>
           <div class="login_bottom">
             <div class="name_box">
-              <a>一封写个自己的信toMe</a>
+              <a>{{login_bottom.desc}}</a>
               <a><i class="iconfont"></i></a>
               <a></a>
             </div>
             <ul>
-              <li>
-                <strong>6</strong>
-                <span>关注</span>
-              </li>
-              <li>
-                <strong>5</strong>
-                <span>粉丝</span>
-              </li>
-              <li>
-                <strong>13</strong>
-                <span>微博</span>
+              <li v-for="(item ,index) in login_bottom.list" :key="index">
+                <strong>{{item.num}}</strong>
+                <span>{{item.tab}}</span>
               </li>
             </ul>
           </div>
@@ -204,25 +156,17 @@
         <div class="wb_card_rank">
           <div class="card_title">
             <h4>
-              <span><a>亚洲动漫排行榜</a></span>
+              <span><a>{{wb_card_rank.card_title.title}}</a></span>
               <div>
-                <a><i></i>换一换</a>
+                <a><i></i>{{wb_card_rank.card_title.button}}</a>
               </div>
             </h4>
           </div>
           <div class="card_list">
             <ul>
-              <li>
-                <i>1</i>
-                <span>凤囚凰</span>
-              </li>
-              <li>
-                <i>2</i>
-                <span>19天</span>
-              </li>
-              <li>
-                <i>3</i>
-                <span>天行九歌</span>
+              <li v-for="(item,index) in wb_card_rank.card_list" :key="index">
+                <i>{{item.order}}</i>
+                <span>{{item.name}}</span>
               </li>
             </ul>
           </div>
@@ -234,29 +178,15 @@
 <script>
 import emoji from "node-emoji";
 import { release, list } from "../../api/assets.js";
+import wb_json from '../../wb.json';
 export default {
   data() {
     return {
-      tab_list: [
-        { item_name: "首页" },
-        { item_name: "我的收藏" },
-        { item_name: "我的赞" },
-        { item_name: "一个横线" },
-        { item_name: "热门微博" },
-        { item_name: "热门视频" },
-        { item_name: "好友圈" },
-        { item_name: "特别关注" },
-        { item_name: "v+微博" },
-        { item_name: "游戏" },
-        { item_name: "群关注" },
-        { item_name: "悄悄关注" }
-      ],
-      menu_list: [
-        { id: 1, value: "公开" },
-        { id: 2, value: "好友圈" },
-        { id: 3, value: "仅自己可见" },
-        { id: 4, value: "仅群可见" }
-      ],
+      tab_list: wb_json.tab_list,
+      menu_list: wb_json.menu_list,
+      wb_tab_ul_list:wb_json.wb_tab_ul_list,
+      login_bottom:wb_json.login_bottom,
+      wb_card_rank:wb_json.wb_card_rank,
       publish_text: "",
       menuVal: "公开",
       menu_show: false,
@@ -349,12 +279,11 @@ export default {
 </script>
 <style lang="less" scoped>
 .wb {
+  background-color: rgb(180, 218, 240);
   width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: row;
   justify-content: center;
-  background-color: rgb(180, 218, 240);
   .wb_nv {
     .wb_nav_item {
       color: #ffffff;
