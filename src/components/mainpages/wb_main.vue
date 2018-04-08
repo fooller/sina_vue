@@ -83,54 +83,7 @@
                 </div>
               </div>
             </div>
-            <div class="wb_main_c_list">
-                <div class="list_item" v-for="(item,index) in list" :key="index">
-                  <div class="top">
-                      <div class="lf_face">
-                        <a><img width="50" height="50" src="../../assets/images/miss.jpg" alt=""></a>
-                      </div>
-                      <div class="ri_detail">
-                        <div class="ri_detail_userinfo"><a>Miss</a><a><i></i></a></div>
-                        <div class="ri_detail_info"><a>02月06日11:25</a>来自<a>韩三岁的iPhone客户端</a></div>
-                        <div class="ri_detail_content">
-                          <a>#miss直播</a>
-                          2018.2.5晚上7点
-                          <br>
-                          <a><i></i>网页链接</a>
-                          <br>
-                          <p>{{item.content}}</p>
-                        </div>
-                        <div class="ri_detail_media">
-                          <div class="media_box">
-                            <ul class="media_box_ul">
-                              <li class="media_box_li">
-                                <img>
-                                <i></i>
-                                <i></i>
-                              </li>
-                            </ul>
-                          </div>
-                        </div>
-                      </div>
-                  </div>
-                  <div class="wb_detail_handle">
-                      <ul class="wb_detail_handle_ul">
-                        <li class="wb_detail_handle_li">
-                          <a><i class="iconfont icon-shoucang1"></i>收藏</a>
-                        </li>
-                        <li class="wb_detail_handle_li">
-                          <a><i class="iconfont icon-icon--"></i>转发</a>
-                        </li>
-                        <li class="wb_detail_handle_li">
-                          <a><i class="iconfont icon-iconfontpinglun"></i>评论</a>
-                        </li>
-                        <li class="wb_detail_handle_li">
-                          <a><i class="iconfont icon-zan1"></i>赞</a>
-                        </li>
-                      </ul>
-                </div>
-                </div>
-            </div>
+            <Release :list="list"></Release>
           </div>
         </div>
       </div>
@@ -178,44 +131,50 @@
 <script>
 import emoji from "node-emoji";
 import { release, list } from "../../api/assets.js";
-import wb_json from '../../wb.json';
+import wb_json from "../../wb.json";
+import Release from '../mainpages/wb_release';
 export default {
+  components:{
+    Release
+  },
   data() {
     return {
       tab_list: wb_json.tab_list,
       menu_list: wb_json.menu_list,
-      wb_tab_ul_list:wb_json.wb_tab_ul_list,
-      login_bottom:wb_json.login_bottom,
-      wb_card_rank:wb_json.wb_card_rank,
+      wb_tab_ul_list: wb_json.wb_tab_ul_list,
+      login_bottom: wb_json.login_bottom,
+      wb_card_rank: wb_json.wb_card_rank,
       publish_text: "",
       menuVal: "公开",
       menu_show: false,
       face_show: false,
       colorBorder: false,
-      list: []
+      list: [],
+      tempt: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
     };
   },
   mounted() {
     window.addEventListener("scroll", this.scroll_fn);
   },
   created() {
-    let emoji_coffee = emoji.get("coffee");
-    console.log(emoji_coffee);
     list().then(res => {
       this.list = res.data;
     });
   },
   methods: {
+    // beforeEnter: function(el) {},
+    // enter: function(el, done) {
+    //   var delay = el.dataset.index * 150;
+    //   setTimeout(function() {
+    //     Velocity(el, { opacity: 1, height: "1.6em" }, { complete: done });
+    //   }, delay);
+    // },
     faceMouseOverFn(index) {
-      // console.log(this.$refs.faces[index]);
       this.$refs.faces[index].style.borderColor = "#f50";
-      // this.$refs.faces[index].style.borderWidth = '1px';
       this.$refs.faces[index].style.borderStyle = "solid";
     },
     faceMouseLeaveFn(index) {
       this.$refs.faces[index].style.borderColor = "#cccccc";
-      // this.$refs.faces[index].style.borderRight = 'none';
-      // this.$refs.faces[index].style.borderTop = 'none';
     },
     selFace(item) {
       this.face_show = false;
@@ -240,6 +199,9 @@ export default {
         this.timeOutBKG(100);
         return;
       }
+      // this.tempt.splice(0, 0, this.publish_text);
+      // this.publish_text = "";
+      // return;
       let formdata = new FormData();
       formdata.append("content", this.publish_text);
       formdata.append("userId", this.$cookie.get("id"));
@@ -248,8 +210,9 @@ export default {
         console.log(res);
       });
       console.log("发布内容为：" + this.publish_text);
+      this.list.splice(0, 0, {content:this.publish_text,time:new Date().toString()});
       this.publish_text = "";
-      this.list.push({ content: this.publish_text });
+      console.log(this.list);
     },
 
     // utils .....................//
@@ -279,6 +242,18 @@ export default {
 </script>
 <style lang="less" scoped>
 .wb {
+  .list-complete-item {
+    transition: all 1s;
+  }
+  .list-complete-enter,
+  .list-complete-leave-to {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  .list-complete-leave-active {
+    position: absolute;
+  }
+  
   background-color: rgb(180, 218, 240);
   width: 100%;
   display: flex;
@@ -617,9 +592,9 @@ export default {
         height: auto;
         // border-radius: 5px;
         .list_item {
-        padding: 20px 20px 0 20px;
-        background-color: #ffffff;
-        margin-bottom: 15px;          
+          padding: 20px 20px 0 20px;
+          background-color: #ffffff;
+          margin-bottom: 15px;
           display: flex;
           flex-direction: column;
           .top {
