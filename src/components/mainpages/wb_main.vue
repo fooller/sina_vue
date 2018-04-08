@@ -162,13 +162,6 @@ export default {
     });
   },
   methods: {
-    // beforeEnter: function(el) {},
-    // enter: function(el, done) {
-    //   var delay = el.dataset.index * 150;
-    //   setTimeout(function() {
-    //     Velocity(el, { opacity: 1, height: "1.6em" }, { complete: done });
-    //   }, delay);
-    // },
     faceMouseOverFn(index) {
       this.$refs.faces[index].style.borderColor = "#f50";
       this.$refs.faces[index].style.borderStyle = "solid";
