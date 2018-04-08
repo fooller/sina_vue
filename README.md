@@ -8,7 +8,8 @@ vue书写新浪微博
       即将会有图片、视频、文件、表情的存储。。。
 ```
 ### 功能展示
-![image](https://github.com/fooller/sina_vue/blob/master/src/assets/release.gif ) 
+<!-- ![image](https://github.com/fooller/sina_vue/blob/master/src/assets/release.gif )  -->
+![image](https://github.com/fooller/sina_vue/blob/master/src/assets/release%202.gif ) 
 ### 写这个页面的目的是什么呢？
 ```
   node框架koa2的出现，吸引了我的眼球，所以想搞个全栈，练习一下，特此，写了这个难看的页面！！！
