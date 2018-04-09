@@ -1,23 +1,10 @@
 <template>
   <div class="wb" >
-    <div class="wb_nv">
-      <div id="lflf" ref="lf" @scroll="scroll_fn" class="wb_nav_item">
-        <div class="nav_box" :class="{line:index ==3 || index == 7}" v-for="(item,index) in tab_list" :key="index">
-          <div v-show="index != 3 && index != 7">
-            {{item.item_name}}
-          </div>          
-          <fieldset>
-            <legend  v-show="index == 3" style="padding-bottom:20px;">
-              <!-- <a>设置</a> -->
-            </legend>
-            <legend v-show="index == 7">
-              <a><i class="iconfont icon-set"></i></a>
-            </legend>
-          </fieldset>
-        </div>
-      </div>
-    </div>
+    <!-- 左边 -->
+    <Nav></Nav>
+    <!-- 中间和右边 -->
     <div class="wb_main">
+      <!-- 中间 -->
       <div class="wb_main_c">
         <div class="wb_main_c_publishertop">
           <div class="publisher_t">
@@ -53,77 +40,23 @@
                 </ul>
               </div>
             </div>
-            <div class="face" v-show="face_show">
-                <div class="sj">
-                  <i class="iconfont icon-sanjiaotop"></i>
-                </div>
-                <div class="faces_box">
-                  <div class="faces">
-                    <ul>
-                      <li ref="faces" @mouseleave="faceMouseLeaveFn(index)" @mouseover="faceMouseOverFn(index)" @click="selFace(item)" v-for="(item,index) in 96" :key="index"><i class="em em-baby"></i></li>
-                    </ul>
-                  </div>
-                </div>
-            </div>
           </div>
         </div>
         <div class="wb_main_c_homefeed">
           <div class="homefeed">
-            <div class="wb_tab">
-              <div class="wb_tab_ul">
-                <ul>
-                  <li v-for="(item,index) in wb_tab_ul_list" :key="index" ><span><a>{{item.item_name}}</a></span><span><i class="iconfont icon-sanjiaotop"></i></span></li>
-                </ul>
-              </div>
-              <div class="wb_tab_search">
-                <div class="search">
-                  <input type="search">
-                  <span><i class="iconfont icon-sousuo"></i></span>
-                  <span><i class="iconfont icon-triangle-bottom"></i></span>
-                </div>
-              </div>
-            </div>
+            <!-- 导航：全部、原创、图片、视频等。。。 -->
+            <Tab></Tab>
+            <!-- 列表 -->
             <Release :list="list"></Release>
           </div>
         </div>
       </div>
+      <!-- 右边 -->
       <div class="wb_main_r">
-        <div class="wb_main_r_login">
-          <div class="login_top">
-            <img src="../../assets/images/miss.jpg" width="60" height="60">
-          </div>
-          <div class="login_bottom">
-            <div class="name_box">
-              <a>{{login_bottom.desc}}</a>
-              <a><i class="iconfont"></i></a>
-              <a></a>
-            </div>
-            <ul>
-              <li v-for="(item ,index) in login_bottom.list" :key="index">
-                <strong>{{item.num}}</strong>
-                <span>{{item.tab}}</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="wb_card_rank">
-          <div class="card_title">
-            <h4>
-              <span><a>{{wb_card_rank.card_title.title}}</a></span>
-              <div>
-                <a><i></i>{{wb_card_rank.card_title.button}}</a>
-              </div>
-            </h4>
-          </div>
-          <div class="card_list">
-            <ul>
-              <li v-for="(item,index) in wb_card_rank.card_list" :key="index">
-                <i>{{item.order}}</i>
-                <span>{{item.name}}</span>
-              </li>
-            </ul>
-          </div>
-        </div>
+        <!-- 个人信息 -->
+        <login-info></login-info>
+        <!-- 卡片 -->
+        <Card></Card>
       </div>
     </div>
   </div>
@@ -132,18 +65,19 @@
 import emoji from "node-emoji";
 import { release, list } from "../../api/assets.js";
 import wb_json from "../../wb.json";
+import Nav from '../mainpages/wb_nav';
+import Tab from '../mainpages/wb_tab';
 import Release from '../mainpages/wb_release';
+import LoginInfo from '../mainpages/wb_logininfo';
+import Card from '../mainpages/wb_card';
 export default {
   components:{
-    Release
+    Release,Nav,Tab,LoginInfo,Card
   },
   data() {
     return {
       tab_list: wb_json.tab_list,
       menu_list: wb_json.menu_list,
-      wb_tab_ul_list: wb_json.wb_tab_ul_list,
-      login_bottom: wb_json.login_bottom,
-      wb_card_rank: wb_json.wb_card_rank,
       publish_text: "",
       menuVal: "公开",
       menu_show: false,
@@ -192,9 +126,6 @@ export default {
         this.timeOutBKG(100);
         return;
       }
-      // this.tempt.splice(0, 0, this.publish_text);
-      // this.publish_text = "";
-      // return;
       let formdata = new FormData();
       formdata.append("content", this.publish_text);
       formdata.append("userId", this.$cookie.get("id"));
@@ -252,47 +183,7 @@ export default {
   display: flex;
   flex-direction: row;
   justify-content: center;
-  .wb_nv {
-    .wb_nav_item {
-      color: #ffffff;
-      font-size: 12px;
-      position: fixed;
-      top: 60px;
-      bottom: 0;
-      width: 150px;
-      background-color: rgba(70, 149, 194, 0.3);
-      height: 100%;
-      .nav_box {
-        width: 150px;
-        height: 30px;
-        padding-left: 34px;
-        line-height: 30px;
-      }
-      .line {
-        height: 12px;
-        padding-left: 0;
-        height: 23px;
-        fieldset {
-          display: block;
-          padding: 0 0 0 120px;
-          zoom: 1;
-          clear: both;
-          border-top-width: 1px;
-          border-top-style: solid;
-          border-top-color: rgba(255, 255, 255, 0.2);
-          line-height: 22px;
-          legend {
-            a {
-              i {
-                color: #ffffff;
-                font-weight: 1000px;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
+ 
 
   .wb_main {
     margin-top: 60px;
@@ -509,73 +400,7 @@ export default {
       .wb_main_c_homefeed {
         .homefeed {
           margin: 10px 0;
-          .wb_tab {
-            display: flex;
-            flex-direction: row;
-            height: 38px;
-            background-color: #ffffff;
-            border-radius: 5px;
-            .wb_tab_ul {
-              flex-grow: 0.5;
-              ul {
-                display: flex;
-                flex-direction: row;
-                font-size: 12px;
-                li {
-                  display: flex;
-                  flex-direction: column;
-                  width: 52px;
-                  padding-left: 14px;
-                  span {
-                    height: 31px;
-                    line-height: 37px;
-                    a {
-                      color: #333;
-                    }
-                  }
-                  span:last-child {
-                    height: 10px;
-                    line-height: 10px;
-                    i {
-                      color: rgb(135, 199, 255);
-                      font-size: 22px;
-                    }
-                  }
-                }
-              }
-            }
-            .wb_tab_search {
-              .search {
-                input[type="search"] {
-                  -webkit-appearance: none;
-                }
-                input::-webkit-search-cancel-button {
-                  display: none;
-                }
-                input {
-                  font-size: 14px;
-                  color: #888888;
-                  height: 26px;
-                  width: 178px;
-                  line-height: 26px;
-                  padding-left: 10px;
-                }
-                border: 1px solid #cccccc;
-                margin-top: 6px;
-                span {
-                  i {
-                    font-size: 14px;
-                  }
-                }
-                span:last-child {
-                  i {
-                    font-size: 13px;
-                    color: #333;
-                  }
-                }
-              }
-            }
-          }
+          
         }
       }
       .wb_main_c_list {
@@ -656,118 +481,8 @@ export default {
       }
     }
     .wb_main_r {
-      .wb_main_r_login {
-        margin-left: 10px;
-        width: 230px;
-        .login_top {
-          border-top-left-radius: 5px;
-          border-top-right-radius: 5px;
-          width: 230px;
-          height: 75px;
-          background-color: #888888;
-          img {
-            border-radius: 50%;
-            border: 2px solid rgb(135, 199, 255);
-            background-color: antiquewhite;
-            margin-bottom: 50px;
-            position: relative;
-            top: 30px;
-            left: 85px;
-          }
-        }
-        .login_bottom {
-          padding: 20px 15px 15px 15px;
-          widows: 230px;
-          height: 90px;
-          border-bottom-left-radius: 5px;
-          border-bottom-right-radius: 5px;
-          background-color: #ffffff;
-          .name_box {
-            font-size: 13px;
-            a {
-              color: #000;
-            }
-          }
-          ul {
-            display: flex;
-            padding: 10px;
-            li {
-              display: flex;
-              flex-direction: column;
-              width: 65px;
-              text-align: center;
-              border-right: 1px solid #d9d9d9;
-              strong {
-                height: 18px;
-                font-size: 18px;
-              }
-              span {
-                height: 15px;
-                font-size: 10px;
-                color: #888;
-              }
-            }
-            li:last-child {
-              border-right: none;
-            }
-          }
-        }
-      }
-      .wb_card_rank {
-        margin: 10px 0 0 10px;
-        height: 281px;
-        width: 230px;
-        border-radius: 5px;
-        background-color: #ffffff;
-        .card_title {
-          height: 39px;
-          border-bottom: 1px solid #f2f2f5;
-          padding: 0 16px;
-          line-height: 39px;
-          h4 {
-            display: flex;
-            justify-content: space-between;
-            color: #333;
-            span {
-              a {
-                color: #f50;
-                font-size: 13px;
-              }
-            }
-            div {
-              a {
-                font-size: 10px;
-              }
-            }
-          }
-        }
-        .card_list {
-          ul {
-            li {
-              height: 49px;
-              line-height: 49px;
-              border-bottom: 1px solid #f2f2f5;
-              padding-left: 16px;
-              i {
-                background-color: #f50;
-                display: inline-block;
-                width: 14px;
-                height: 14px;
-                border-radius: 50%;
-                color: #ffffff;
-                text-align: center;
-                line-height: 14px;
-                vertical-align: middle;
-                margin-right: 5px;
-                font-size: 10px;
-              }
-              span {
-                font-size: 13px;
-              }
-            }
-          }
-        }
-      }
+      
+      
     }
   }
 }

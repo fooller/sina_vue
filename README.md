@@ -8,7 +8,12 @@ vue书写新浪微博
       即将会有图片、视频、文件、表情的存储。。。
 ```
 ### 功能展示
-<!-- ![image](https://github.com/fooller/sina_vue/blob/master/src/assets/release.gif )  -->
+
+#### 登陆功能
+
+#### 注册功能
+
+#### 发布功能
 ![image](https://github.com/fooller/sina_vue/blob/master/src/assets/release%202.gif ) 
 ### 写这个页面的目的是什么呢？
 ```
