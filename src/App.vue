@@ -16,6 +16,7 @@ export default {
 <style lang="less">
 @import "~vux/src/styles/reset.less";
 @import "./static/css/reset";
+
 body {
   background-color: rgb(246, 246, 246);
   // height: 100%;
@@ -23,7 +24,9 @@ body {
 }
 // 修改vux中search组件的样式
 .vux-search-box {
-  .weui-icon-clear::before{display:none;} 
+  .weui-icon-clear::before {
+    display: none;
+  }
   // input::-webkit-search-cancel-button ::before{display: none;}
   .weui-search-bar {
     .weui-search-bar__form {
@@ -31,14 +34,14 @@ body {
         top: 5px;
       }
     }
-    .weui-search-bar__cancel-btn{
+    .weui-search-bar__cancel-btn {
       font-size: 14px;
     }
   }
 }
 // 修改loading组件的样式
-.weui-loading_toast{
-  .weui-toast{
+.weui-loading_toast {
+  .weui-toast {
     width: 100px;
     height: 100px;
   }

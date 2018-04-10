@@ -1,6 +1,6 @@
 <template>
   <div class="nav">
-      <div id="lflf" ref="lf" @scroll="scroll_fn" class="nav_item">
+      <div id="lflf" ref="lf"  class="nav_item">
         <div class="nav_box" :class="{line:index ==3 || index == 7}" v-for="(item,index) in tab_list" :key="index">
           <div v-show="index != 3 && index != 7">
             {{item.item_name}}

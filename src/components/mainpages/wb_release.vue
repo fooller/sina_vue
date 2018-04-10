@@ -17,7 +17,7 @@
                     <br>
                     <a><i></i>网页链接</a>
                     <br>
-                    <p>{{item.content}}</p>
+                    <p v-html="$emoji(item.content)"></p>
                     </div>
                     <div class="ri_detail_media">
                     <div class="media_box">
@@ -59,7 +59,7 @@ export default {
             type:Array,
             default:[]
         }
-    }
+    },
 };
 </script>
 <style lang="less" scoped>

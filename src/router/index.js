@@ -28,8 +28,7 @@ export default new Router({
   scrollBehavior,
   routes: [{
     path: '/',
-    name: 'space',
-    component: space
+    redirect:'login'
   }, {
     path: '/login',
     component: login,

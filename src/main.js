@@ -13,16 +13,18 @@ import axios from 'axios';
 import cookies from 'js-cookie';
 import store from "./vuex/index";
 import VueScroll from 'vue-scroll'
-Vue.use(VueScroll)
-Vue.prototype.$cookie = cookies;
+import emoji from './components/emoji/api/emoji'
 import './static/iconfont/iconfont.css'
 import {  ToastPlugin,ConfirmPlugin,LoadingPlugin,AlertPlugin } from 'vux';
 Vue.use(LoadingPlugin)
 Vue.use(ConfirmPlugin)
 Vue.use(ToastPlugin)
 Vue.use(AlertPlugin);
+Vue.use(VueScroll)
 axios.defaults.baseURL = window.baseURL||"";
 Vue.prototype.$axios = axios;
+Vue.prototype.$cookie = cookies;
+Vue.prototype.$emoji = emoji;
 
 FastClick.attach(document.body)
 

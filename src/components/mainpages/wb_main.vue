@@ -1,7 +1,7 @@
 <template>
   <div class="wb" >
     <!-- 左边 -->
-    <Nav></Nav>
+    <wb-nav></wb-nav>
     <!-- 中间和右边 -->
     <div class="wb_main">
       <!-- 中间 -->
@@ -24,7 +24,11 @@
           <div class="publisher_b">
             <div class="kind">
               <a @click="faceFn"><i style="color:#ffa405" class="iconfont icon-biaoqing"></i>表情</a>
-              <a><i style="color:#84c002" class="iconfont icon-tupian"></i>图片</a>
+              <a class="img">
+                <i style="color:#84c002" class="iconfont icon-tupian">
+                </i>图片
+                <input type="file" accept="image/*" value="1">
+              </a>
               <a><i style="color:#54A8E5" class="iconfont icon-shipin1"></i>视频</a>
               <a><i style="color:#54A8E5" class="iconfont icon-huati"></i>话题</a>
               <a><i style="color:#ffa405" class="iconfont icon-shandian"></i>头条文章</a>
@@ -40,12 +44,17 @@
                 </ul>
               </div>
             </div>
+            <transition name="fade">
+              <div class="emoji" v-if="face_show">
+                  <emoji @select="selectEmoji" class="bor"></emoji>
+              </div>
+            </transition>
           </div>
         </div>
         <div class="wb_main_c_homefeed">
           <div class="homefeed">
             <!-- 导航：全部、原创、图片、视频等。。。 -->
-            <Tab></Tab>
+            <wb-tab></wb-tab>
             <!-- 列表 -->
             <Release :list="list"></Release>
           </div>
@@ -65,14 +74,20 @@
 import emoji from "node-emoji";
 import { release, list } from "../../api/assets.js";
 import wb_json from "../../wb.json";
-import Nav from '../mainpages/wb_nav';
-import Tab from '../mainpages/wb_tab';
-import Release from '../mainpages/wb_release';
-import LoginInfo from '../mainpages/wb_logininfo';
-import Card from '../mainpages/wb_card';
+import wbNav from "../mainpages/wb_nav";
+import wbTab from "../mainpages/wb_tab";
+import Release from "../mainpages/wb_release";
+import LoginInfo from "../mainpages/wb_logininfo";
+import Card from "../mainpages/wb_card";
+import Emoji from "../emoji/components/emoji";
 export default {
-  components:{
-    Release,Nav,Tab,LoginInfo,Card
+  components: {
+    Release,
+    wbNav,
+    wbTab,
+    LoginInfo,
+    Card,
+    Emoji
   },
   data() {
     return {
@@ -88,7 +103,7 @@ export default {
     };
   },
   mounted() {
-    window.addEventListener("scroll", this.scroll_fn);
+    // window.addEventListener("scroll", this.scroll_fn);
   },
   created() {
     list().then(res => {
@@ -96,6 +111,10 @@ export default {
     });
   },
   methods: {
+    selectEmoji(emoji) {
+      console.log(emoji);
+      this.publish_text += emoji;
+    },
     faceMouseOverFn(index) {
       this.$refs.faces[index].style.borderColor = "#f50";
       this.$refs.faces[index].style.borderStyle = "solid";
@@ -116,10 +135,10 @@ export default {
       this.menu_show = false;
       this.menuVal = item.value;
     },
-    scroll_fn() {
-      console.log(document.documentElement.scrollTop);
-      console.log(document.getElementById("lflf").scrollTop);
-    },
+    // scroll_fn() {
+    // console.log(document.documentElement.scrollTop);
+    // console.log(document.getElementById("lflf").scrollTop);
+    // },
     // 发布
     publish() {
       if (!this.publish_text) {
@@ -134,7 +153,10 @@ export default {
         console.log(res);
       });
       console.log("发布内容为：" + this.publish_text);
-      this.list.splice(0, 0, {content:this.publish_text,time:new Date().toString()});
+      this.list.splice(0, 0, {
+        content: this.publish_text,
+        time: new Date().toString()
+      });
       this.publish_text = "";
       console.log(this.list);
     },
@@ -161,6 +183,11 @@ export default {
         }
       }, time);
     }
+  },
+  watch: {
+    // publish_text(value){
+    //   return this.$emoji(value);
+    // }
   }
 };
 </script>
@@ -177,13 +204,12 @@ export default {
   .list-complete-leave-active {
     position: absolute;
   }
-  
+
   background-color: rgb(180, 218, 240);
   width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: center;
- 
 
   .wb_main {
     margin-top: 60px;
@@ -262,6 +288,19 @@ export default {
             height: 24px;
             line-height: 24px;
             padding-top: 20px;
+            .img {
+              position: relative;
+              input {
+                position: absolute;
+                left: 0px;
+                top: 0px;
+                height: 30px;
+                width: 21px;
+                line-height: 30px;
+                opacity: 0;
+                font-size: 0;
+              }
+            }
 
             a {
               display: inline-block;
@@ -269,10 +308,12 @@ export default {
               margin: 0 18px 0 0;
               color: #333;
               vertical-align: middle;
+              
               i {
                 vertical-align: middle;
                 padding-right: 5px;
                 font-size: 20px;
+                width: 26px;
               }
             }
           }
@@ -317,82 +358,23 @@ export default {
               }
             }
           }
-          .face {
-            position: relative;
-            .sj {
-              position: absolute;
-              top: 35px;
-              left: -560px;
-              i {
-                color: #f50;
-                font-size: 30px;
-                border-width: 7px;
-              }
+          .emoji {
+            .fade-enter-active,
+            .fade-leave-active {
+              transition: opacity 0.3s;
             }
-            .faces_box {
-              position: absolute;
-              top: 50px;
-              left: -580px;
-              // left: 10px;
-              width: 420px;
-              height: 300px;
+            .fade-enter,
+            .fade-leave-active {
+              opacity: 0.5;
+            }
+            .fade-move {
+              transition: transform 0.4s;
+            }
+            position: absolute;
+            top: 110px;
+            width: 407px;
+            .bor {
               border: 1px solid #cccccc;
-              background-color: #ffffff;
-              .faces {
-                padding: 26px 16px 15px;
-                ul {
-                  display: flex;
-                  flex-direction: row;
-                  flex-wrap: wrap;
-                  li {
-                    width: 32px;
-                    height: 32px;
-                    border-left: 1px solid #cccccc;
-                    border-bottom: 1px solid #cccccc;
-                    text-align: center;
-                    padding-top: 5px;
-                  }
-                  li:nth-child(12n) {
-                    border-right: 1px solid #cccccc;
-                  }
-                  li:nth-child(1) {
-                    border-top: 1px solid #cccccc;
-                  }
-                  li:nth-child(2) {
-                    border-top: 1px solid #cccccc;
-                  }
-                  li:nth-child(3) {
-                    border-top: 1px solid #cccccc;
-                  }
-                  li:nth-child(4) {
-                    border-top: 1px solid #cccccc;
-                  }
-                  li:nth-child(5) {
-                    border-top: 1px solid #cccccc;
-                  }
-                  li:nth-child(6) {
-                    border-top: 1px solid #cccccc;
-                  }
-                  li:nth-child(7) {
-                    border-top: 1px solid #cccccc;
-                  }
-                  li:nth-child(8) {
-                    border-top: 1px solid #cccccc;
-                  }
-                  li:nth-child(9) {
-                    border-top: 1px solid #cccccc;
-                  }
-                  li:nth-child(10) {
-                    border-top: 1px solid #cccccc;
-                  }
-                  li:nth-child(11) {
-                    border-top: 1px solid #cccccc;
-                  }
-                  li:nth-child(12) {
-                    border-top: 1px solid #cccccc;
-                  }
-                }
-              }
             }
           }
         }
@@ -400,7 +382,6 @@ export default {
       .wb_main_c_homefeed {
         .homefeed {
           margin: 10px 0;
-          
         }
       }
       .wb_main_c_list {
@@ -481,8 +462,6 @@ export default {
       }
     }
     .wb_main_r {
-      
-      
     }
   }
 }
